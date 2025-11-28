@@ -1,5 +1,6 @@
 package com.jordan.club.user.service;
 
+import com.jordan.club.common.service.CommonService;
 import com.jordan.club.user.dto.UserDTO;
 import com.jordan.club.user.entity.User;
 import com.jordan.club.user.mapper.UserMapper;
@@ -9,47 +10,48 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements CommonService<UserDTO> {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+    @Override
     public List<UserDTO> getAll() {
         return userRepository.findAll().stream().map(userMapper::toDTO).toList();
     }
 
+    @Override
     public UserDTO getById(Long id) {
-        User user = userRepository.findById(id).orElseThrow();
-        return userMapper.toDTO(user);
+        return userMapper.toDTO(userRepository.findById(id).orElseThrow());
     }
 
-    public UserDTO save(UserDTO userDTO) {
-        User newUser = userMapper.fromDTO(userDTO);
-        User savedUser = userRepository.save(newUser);
+    @Override
+    public UserDTO save(UserDTO newUser) {
+        User savedUser = userRepository.save(userMapper.fromDTO(newUser));
         return userMapper.toDTO(savedUser);
     }
 
-    public UserDTO update(UserDTO userDTO, Long id) {
+    @Override
+    public UserDTO update(Long id, UserDTO updatedUser) {
         User existingUser = userRepository.findById(id).orElseThrow();
 
-        if (nonNull(userDTO.getName())) {
-            existingUser.setName(userDTO.getName());
+        if (nonNull(updatedUser.getName())) {
+            existingUser.setName(updatedUser.getName());
         }
 
-        User savedUser = userRepository.save(existingUser);
-        return userMapper.toDTO(savedUser);
+        return userMapper.toDTO(userRepository.save(existingUser));
     }
 
+    @Override
     public void delete(Long id) {
         User existingUser = userRepository.findById(id).orElseThrow();
         userRepository.delete(existingUser);
     }
-
-
 }

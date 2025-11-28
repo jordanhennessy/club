@@ -45,7 +45,7 @@ public class UserController implements CommonController<UserDTO> {
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable("id") Long id,
                                           @RequestBody UserDTO updatedUser) {
-        return ResponseEntity.ok().body(userService.update(updatedUser, id));
+        return ResponseEntity.ok().body(userService.update(id, updatedUser));
     }
 
     @Override
