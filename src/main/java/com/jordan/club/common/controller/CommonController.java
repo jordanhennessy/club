@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface CommonController<T> {
-    ResponseEntity<String> getStatus();
     ResponseEntity<List<T>> getAll();
     ResponseEntity<T> getById(Long id);
     ResponseEntity<T> create(T newDTO);

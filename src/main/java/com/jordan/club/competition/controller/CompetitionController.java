@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -18,12 +20,6 @@ import java.util.List;
 public class CompetitionController implements CommonController<CompetitionDTO> {
 
     private final CompetitionService competitionService;
-
-    @Override
-    @GetMapping("/status")
-    public ResponseEntity<String> getStatus() {
-        return ResponseEntity.ok().body("OK");
-    }
 
     @Override
     @GetMapping
@@ -40,7 +36,7 @@ public class CompetitionController implements CommonController<CompetitionDTO> {
     @Override
     @PostMapping
     public ResponseEntity<CompetitionDTO> create(@RequestBody CompetitionDTO newCompetition) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(competitionService.save(newCompetition));
+        return ResponseEntity.status(CREATED).body(competitionService.save(newCompetition));
     }
 
     @Override
