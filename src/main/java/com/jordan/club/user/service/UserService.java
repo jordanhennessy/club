@@ -29,8 +29,10 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
-    public User save(UserDTO userDTO) {
-        return userRepository.save(userMapper.fromDTO(userDTO));
+    public UserDTO save(UserDTO userDTO) {
+        User newUser = userMapper.fromDTO(userDTO);
+        User savedUser = userRepository.save(newUser);
+        return userMapper.toDTO(savedUser);
     }
 
     public UserDTO update(UserDTO userDTO, Long id) {

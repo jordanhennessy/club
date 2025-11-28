@@ -39,14 +39,14 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO userDTO) {
-        User savedUser = userService.save(userDTO);
+        UserDTO savedUser = userService.save(userDTO);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(savedUser.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body(userMapper.toDTO(savedUser));
+        return ResponseEntity.created(location).body(savedUser);
     }
 
     @PutMapping("/{id}")

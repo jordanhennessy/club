@@ -11,12 +11,14 @@ public class UserMapper {
 
     public User fromDTO(UserDTO userDTO) {
         return User.builder()
+                .id(userDTO.getId())
                 .name(userDTO.getName())
                 .build();
     }
 
     public UserDTO toDTO(User user) {
         return UserDTO.builder()
+                .id(user.getId())
                 .name(user.getName())
                 .build();
     }
