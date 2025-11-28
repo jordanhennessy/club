@@ -1,6 +1,8 @@
 package com.jordan.club.user.controller;
 
+import com.jordan.club.user.dto.UserDTO;
 import com.jordan.club.user.entity.User;
+import com.jordan.club.user.mapper.UserMapper;
 import com.jordan.club.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
     @GetMapping("/status")
     public ResponseEntity<String> getStatus() {
@@ -25,30 +28,30 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(userService.getById(id));
     }
 
     @PostMapping
-    public ResponseEntity<User> addUser(@RequestBody User user) {
-        User savedUser = userService.save(user);
+    public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO userDTO) {
+        User savedUser = userService.save(userDTO);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(savedUser.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body(savedUser);
+        return ResponseEntity.created(location).body(userMapper.toDTO(savedUser));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody User user) {
-        return ResponseEntity.ok(userService.update(user, id));
+    public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long id, @RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok(userService.update(userDTO, id));
     }
 
     @DeleteMapping("/{id}")

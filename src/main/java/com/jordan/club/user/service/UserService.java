@@ -1,6 +1,8 @@
 package com.jordan.club.user.service;
 
+import com.jordan.club.user.dto.UserDTO;
 import com.jordan.club.user.entity.User;
+import com.jordan.club.user.mapper.UserMapper;
 import com.jordan.club.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,32 +18,35 @@ import static java.util.Objects.nonNull;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public List<User> getAll() {
-        return userRepository.findAll();
+    public List<UserDTO> getAll() {
+        return userRepository.findAll().stream().map(userMapper::toDTO).toList();
     }
 
-    public User getById(Long id) {
-        return userRepository.findById(id).orElseThrow();
+    public UserDTO getById(Long id) {
+        User user = userRepository.findById(id).orElseThrow();
+        return userMapper.toDTO(user);
     }
 
-    public User save(User user) {
-        return userRepository.save(user);
+    public User save(UserDTO userDTO) {
+        return userRepository.save(userMapper.fromDTO(userDTO));
     }
 
-    public User update(User user, Long id) {
+    public UserDTO update(UserDTO userDTO, Long id) {
         User existingUser = userRepository.findById(id).orElseThrow();
 
-        if (nonNull(user.getName())) {
-            existingUser.setName(user.getName());
+        if (nonNull(userDTO.getName())) {
+            existingUser.setName(userDTO.getName());
         }
 
-        return userRepository.save(existingUser);
+        User savedUser = userRepository.save(existingUser);
+        return userMapper.toDTO(savedUser);
     }
 
     public void delete(Long id) {
         User existingUser = userRepository.findById(id).orElseThrow();
-        userRepository.deleteById(id);
+        userRepository.delete(existingUser);
     }
 
 
