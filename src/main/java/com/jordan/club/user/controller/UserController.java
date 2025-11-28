@@ -1,8 +1,6 @@
 package com.jordan.club.user.controller;
 
 import com.jordan.club.user.dto.UserDTO;
-import com.jordan.club.user.entity.User;
-import com.jordan.club.user.mapper.UserMapper;
 import com.jordan.club.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +18,6 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final UserMapper userMapper;
 
     @GetMapping("/status")
     public ResponseEntity<String> getStatus() {
