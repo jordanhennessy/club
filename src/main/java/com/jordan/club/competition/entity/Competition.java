@@ -1,12 +1,13 @@
 package com.jordan.club.competition.entity;
 
+import com.jordan.club.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+import java.util.Set;
+
+@Getter
+@Setter
 @Entity
 @Builder
 @AllArgsConstructor
@@ -23,5 +24,12 @@ public class Competition {
 
     @Column(name = "description")
     private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organizer_id")
+    private User organizer;
+
+    @ManyToMany(mappedBy = "enteredCompetitions")
+    private Set<User> participants;
 
 }
