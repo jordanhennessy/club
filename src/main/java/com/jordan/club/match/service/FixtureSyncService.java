@@ -6,6 +6,7 @@ import com.jordan.club.match.model.Match;
 import com.jordan.club.match.entity.Fixture;
 import com.jordan.club.match.mapper.MatchMapper;
 import com.jordan.club.match.repository.FixtureRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -18,7 +19,6 @@ import static java.util.concurrent.TimeUnit.HOURS;
 
 @Slf4j
 @Component
-@EnableScheduling
 @RequiredArgsConstructor
 public class FixtureSyncService {
 
@@ -26,7 +26,7 @@ public class FixtureSyncService {
     private final MatchMapper mapper;
     private final FixtureRepository fixtureRepository;
 
-    @Scheduled(fixedRate = 1, timeUnit = HOURS)
+    @Transactional
     public void syncMatchData() {
         try {
             log.info("Fetching matches from API");
