@@ -7,8 +7,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -17,6 +19,8 @@ import java.util.Date;
 @Table(name = "fixtures")
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Fixture {
 
     @Id

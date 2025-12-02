@@ -20,7 +20,7 @@ import static java.util.concurrent.TimeUnit.HOURS;
 @Component
 @EnableScheduling
 @RequiredArgsConstructor
-public class MatchSyncService {
+public class FixtureSyncService {
 
     private final MatchClient matchClient;
     private final MatchMapper mapper;
