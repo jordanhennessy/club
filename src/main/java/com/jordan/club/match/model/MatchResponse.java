@@ -1,4 +1,4 @@
-package com.jordan.club.match.dto;
+package com.jordan.club.match.model;
 
 import lombok.Data;
 

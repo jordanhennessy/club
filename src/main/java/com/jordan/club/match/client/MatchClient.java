@@ -1,8 +1,9 @@
 package com.jordan.club.match.client;
 
 import com.google.gson.Gson;
-import com.jordan.club.match.dto.Match;
-import com.jordan.club.match.dto.MatchResponse;
+import com.jordan.club.match.model.CompetitionResponse;
+import com.jordan.club.match.model.Match;
+import com.jordan.club.match.model.MatchResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -42,10 +43,18 @@ public class MatchClient {
         return matchResponse.getMatches();
     }
 
+    public int getCurrentGameWeek() throws IOException, InterruptedException {
+        String getUrl = String.format("%s/competitions/PL", baseUrl);
+        HttpRequest request = buildGetRequest(getUrl);
+        HttpResponse<String> response = httpClient.send(request, BodyHandlers.ofString());
+        CompetitionResponse competitionResponse = gson.fromJson(response.body(), CompetitionResponse.class);
+        return competitionResponse.getCurrentSeasonInfo().getCurrentGameWeek();
+    }
+
     private HttpRequest buildGetRequest(String url) {
         return HttpRequest.newBuilder()
                 .GET()
-                .headers(AUTH_HEADER, apiKey)
+                .header(AUTH_HEADER, apiKey)
                 .uri(URI.create(url))
                 .build();
     }

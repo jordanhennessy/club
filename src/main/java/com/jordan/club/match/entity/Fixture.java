@@ -1,6 +1,6 @@
 package com.jordan.club.match.entity;
 
-import com.jordan.club.match.dto.MatchStatus;
+import com.jordan.club.match.model.MatchStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
@@ -32,6 +32,12 @@ public class Fixture {
 
     @Column(name = "away_team")
     private String awayTeam;
+
+    @Column(name = "home_score")
+    private int homeScore;
+
+    @Column(name = "away_score")
+    private int awayScore;
 
     @Column(name = "date")
     private Date matchDate;

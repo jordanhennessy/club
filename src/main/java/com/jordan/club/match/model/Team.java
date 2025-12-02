@@ -1,4 +1,4 @@
-package com.jordan.club.match.dto;
+package com.jordan.club.match.model;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;

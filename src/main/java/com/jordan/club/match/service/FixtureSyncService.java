@@ -2,7 +2,7 @@ package com.jordan.club.match.service;
 
 
 import com.jordan.club.match.client.MatchClient;
-import com.jordan.club.match.dto.Match;
+import com.jordan.club.match.model.Match;
 import com.jordan.club.match.entity.Fixture;
 import com.jordan.club.match.mapper.MatchMapper;
 import com.jordan.club.match.repository.FixtureRepository;
