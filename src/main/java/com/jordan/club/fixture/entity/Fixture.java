@@ -1,6 +1,6 @@
-package com.jordan.club.match.entity;
+package com.jordan.club.fixture.entity;
 
-import com.jordan.club.match.model.MatchStatus;
+import com.jordan.club.fixture.enums.FixtureStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
@@ -12,7 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -40,12 +40,12 @@ public class Fixture {
     private int awayScore;
 
     @Column(name = "date")
-    private Date matchDate;
+    private LocalDateTime matchDate;
 
     @Column(name = "game_week")
     private int gameWeek;
 
     @Column(name = "status")
-    private MatchStatus status;
+    private FixtureStatus status;
 
 }

@@ -1,11 +1,11 @@
-package com.jordan.club.match.service;
+package com.jordan.club.fixture.service;
 
 
-import com.jordan.club.match.client.MatchClient;
-import com.jordan.club.match.model.Match;
-import com.jordan.club.match.entity.Fixture;
-import com.jordan.club.match.mapper.MatchMapper;
-import com.jordan.club.match.repository.FixtureRepository;
+import com.jordan.club.fixture.client.FixtureClient;
+import com.jordan.club.fixture.entity.Fixture;
+import com.jordan.club.fixture.model.FixtureResponse;
+import com.jordan.club.fixture.mapper.FixtureMapper;
+import com.jordan.club.fixture.repository.FixtureRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,17 +18,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FixtureSyncService {
 
-    private final MatchClient matchClient;
-    private final MatchMapper mapper;
+    private final FixtureClient fixtureClient;
+    private final FixtureMapper mapper;
     private final FixtureRepository fixtureRepository;
 
     @Transactional
     public void refreshFixtureData() {
         try {
-            log.info("Fetching matches from API");
-            List<Match> matches = matchClient.getAllMatches();
-            log.info("Successfully fetched {} matches from the API, refreshing the DB", matches.size());
-            List<Fixture> fixtures = matches.stream().map(mapper::fromDTO).toList();
+            log.info("Fetching fixtures from API");
+            List<FixtureResponse> fixtureResponses = fixtureClient.getAllFixtures();
+            log.info("Successfully fetched {} fixtures from the API, refreshing the DB", fixtureResponses.size());
+            List<Fixture> fixtures = fixtureResponses.stream().map(mapper::fromAPIResponse).toList();
             fixtureRepository.deleteAll();
             fixtureRepository.saveAll(fixtures);
             log.info("DB refreshed successfully");
@@ -41,7 +41,7 @@ public class FixtureSyncService {
     public void updateGameWeekData() {
         try {
             log.info("Updating game week data...");
-            int currentGameWeek = matchClient.getCurrentGameWeek();
+            int currentGameWeek = fixtureClient.getCurrentGameWeek();
         } catch (Exception e) {
             log.error("Exception thrown when updating gameweeks", e);
         }

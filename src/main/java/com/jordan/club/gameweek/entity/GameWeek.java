@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -26,5 +28,8 @@ public class GameWeek {
 
     @Column
     private GameWeekStatus status;
+
+    @Column
+    private LocalDateTime deadline;
 
 }

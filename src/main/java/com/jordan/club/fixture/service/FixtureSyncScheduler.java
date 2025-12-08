@@ -1,4 +1,4 @@
-package com.jordan.club.match.service;
+package com.jordan.club.fixture.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;

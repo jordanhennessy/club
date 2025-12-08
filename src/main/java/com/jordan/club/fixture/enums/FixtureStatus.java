@@ -1,6 +1,6 @@
-package com.jordan.club.match.model;
+package com.jordan.club.fixture.enums;
 
-public enum MatchStatus {
+public enum FixtureStatus {
     SCHEDULED,
     TIMED,
     IN_PLAY,

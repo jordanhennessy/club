@@ -1,6 +1,6 @@
-package com.jordan.club.match.repository;
+package com.jordan.club.fixture.repository;
 
-import com.jordan.club.match.entity.Fixture;
+import com.jordan.club.fixture.entity.Fixture;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

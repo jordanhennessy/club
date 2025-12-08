@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.NoSuchElementException;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -15,11 +18,21 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleNoSuchElementException() {
 
         ErrorResponse response = ErrorResponse.builder()
-                .statusCode(HttpStatus.NOT_FOUND.value())
+                .statusCode(NOT_FOUND.value())
                 .message("Unable to find the requested resource")
                 .build();
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        return ResponseEntity.status(NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(ValidationException ex) {
+        ErrorResponse response = ErrorResponse.builder()
+                .statusCode(UNPROCESSABLE_ENTITY.value())
+                .message(ex.getMessage())
+                .build();
+
+        return  ResponseEntity.status(UNPROCESSABLE_ENTITY).body(response);
     }
 
 }

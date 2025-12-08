@@ -4,10 +4,7 @@ import com.jordan.club.gameweek.dto.GameWeekDTO;
 import com.jordan.club.gameweek.service.GameWeekService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,8 +16,9 @@ public class GameWeekController {
     private final GameWeekService gameWeekService;
 
     @GetMapping
-    public ResponseEntity<List<GameWeekDTO>> getAllGameWeeks() {
-        return ResponseEntity.ok(gameWeekService.getAll());
+    public ResponseEntity<List<GameWeekDTO>>
+    getAllGameWeeks(@RequestParam(name = "status", required = false) String status) {
+        return ResponseEntity.ok(gameWeekService.getByStatus(status));
     }
 
     @GetMapping("/{id}")

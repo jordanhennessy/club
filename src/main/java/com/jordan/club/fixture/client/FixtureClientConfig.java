@@ -1,4 +1,4 @@
-package com.jordan.club.match.client;
+package com.jordan.club.fixture.client;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import java.net.http.HttpClient;
 
 @Configuration
-public class MatchClientConfig {
+public class FixtureClientConfig {
 
     @Bean
     public HttpClient httpClient() {

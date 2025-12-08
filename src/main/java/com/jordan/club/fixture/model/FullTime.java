@@ -1,5 +1,7 @@
-package com.jordan.club.match.model;
+package com.jordan.club.fixture.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,12 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FullTime {
 
-    @SerializedName("home")
+    @JsonProperty("home")
     private int homeScore;
 
-    @SerializedName("away")
+    @JsonProperty("away")
     private int awayScore;
 
 }

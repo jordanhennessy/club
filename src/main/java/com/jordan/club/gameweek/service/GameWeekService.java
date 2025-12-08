@@ -1,5 +1,6 @@
 package com.jordan.club.gameweek.service;
 
+import com.jordan.club.common.exception.ValidationException;
 import com.jordan.club.common.service.CommonService;
 import com.jordan.club.gameweek.dto.GameWeekDTO;
 import com.jordan.club.gameweek.entity.GameWeek;
@@ -14,8 +15,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
-import static com.jordan.club.gameweek.enums.GameWeekStatus.PENDING;
+import static com.jordan.club.gameweek.enums.GameWeekStatus.UPCOMING;
+import static java.util.Objects.isNull;
 
 @Slf4j
 @Service
@@ -46,6 +49,26 @@ public class GameWeekService {
         return gameWeekRepository.findById(id).map(gameWeekMapper::toDTO).orElseThrow();
     }
 
+    public List<GameWeekDTO> getByStatus(String status) {
+        if (isNull(status)) {
+            return getAll();
+        }
+
+        GameWeekStatus gameWeekStatus = GameWeekStatus.getByName(status);
+
+        if (isNull(gameWeekStatus)) {
+            throw new ValidationException("Invalid value for GameWeekStatus: " + status);
+        }
+
+        List<GameWeek> gameWeeks = gameWeekRepository.findByStatus(gameWeekStatus);
+        return gameWeeks.stream().map(gameWeekMapper::toDTO).toList();
+    }
+
+    public void update(GameWeekDTO gameWeekDTO) {
+        GameWeek gameWeek = gameWeekMapper.fromDTO(gameWeekDTO);
+        gameWeekRepository.save(gameWeek);
+    }
+
     private boolean gameWeeksExist() {
         return gameWeekRepository.count() == expectedNumOfGameWeeks;
     }
@@ -60,7 +83,7 @@ public class GameWeekService {
     private GameWeek buildGameWeek(int gameWeek) {
         return GameWeek.builder()
                 .gameWeek(gameWeek)
-                .status(PENDING)
+                .status(UPCOMING)
                 .build();
     }
 }
