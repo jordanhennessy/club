@@ -13,15 +13,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/matches")
+@RequestMapping("/fixtures")
 @RequiredArgsConstructor
 public class FixtureController {
 
     private final FixtureService fixtureService;
 
     @GetMapping()
-    public ResponseEntity<List<FixtureDTO>> getFixtures(@RequestParam(name = "gameWeek", required = false) Integer gameWeek) {
-        List<FixtureDTO> fixtureResponses = fixtureService.getFixturesByGameWeek(gameWeek);
+    public ResponseEntity<List<FixtureDTO>> getFixtures(
+            @RequestParam(name = "gameWeek", required = false) Integer gameWeek,
+            @RequestParam(name = "status", required = false) String status
+    ) {
+        List<FixtureDTO> fixtureResponses = fixtureService.getFixturesByGameWeekAndStatus(gameWeek, status);
         return ResponseEntity.ok(fixtureResponses);
     }
 
