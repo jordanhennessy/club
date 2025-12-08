@@ -16,7 +16,7 @@ public class FixtureSyncScheduler {
 
     @Scheduled(fixedRate = 1, timeUnit = HOURS)
     public void scheduleFixtureSync() {
-        fixtureSyncService.syncMatchData();
+        fixtureSyncService.refreshFixtureData();
     }
 
 }
