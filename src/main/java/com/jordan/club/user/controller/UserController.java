@@ -1,8 +1,9 @@
 package com.jordan.club.user.controller;
 
-import com.jordan.club.common.controller.CommonController;
-import com.jordan.club.user.dto.UserDTO;
+import com.jordan.club.user.dto.response.UserResponse;
+import com.jordan.club.user.dto.request.CreateUserRequest;
 import com.jordan.club.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,42 +22,37 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-public class UserController implements CommonController<UserDTO> {
+public class UserController {
 
     private final UserService userService;
 
-    @Override
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAll() {
+    public ResponseEntity<List<UserResponse>> getAll() {
         return ResponseEntity.ok(userService.getAll());
     }
 
-    @Override
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getById(@PathVariable("id") Long id) {
+    public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getById(id));
     }
 
-    @Override
     @PostMapping
-    public ResponseEntity<UserDTO> create(@RequestBody UserDTO user) {
-        UserDTO created = userService.save(user);
+    public ResponseEntity<UserResponse> create(@Valid @RequestBody CreateUserRequest newUser) {
+        UserResponse created = userService.save(newUser);
         return ResponseEntity.status(CREATED).body(created);
     }
 
-    @Override
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update(
-            @PathVariable("id") Long id,
-            @RequestBody UserDTO updatedUser
+    public ResponseEntity<UserResponse> update(
+            @PathVariable Long id,
+            @RequestBody UserResponse updatedUser
     ) {
-        UserDTO updated = userService.update(id, updatedUser);
+        UserResponse updated = userService.update(id, updatedUser);
         return ResponseEntity.ok(updated);
     }
 
-    @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         userService.delete(id);
         return ResponseEntity.ok("User deleted successfully");
     }

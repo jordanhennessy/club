@@ -6,15 +6,7 @@ import com.jordan.club.competition.dto.JoinCompetitionRequest;
 import com.jordan.club.competition.service.CompetitionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,7 +27,7 @@ public class CompetitionController implements CommonController<CompetitionDTO> {
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<CompetitionDTO> getById(@PathVariable("id") Long id) {
+    public ResponseEntity<CompetitionDTO> getById(@PathVariable Long id) {
         return ResponseEntity.ok(competitionService.getById(id));
     }
 
@@ -49,7 +41,7 @@ public class CompetitionController implements CommonController<CompetitionDTO> {
     @Override
     @PutMapping("/{id}")
     public ResponseEntity<CompetitionDTO> update(
-            @PathVariable("id") Long id,
+            @PathVariable Long id,
             @RequestBody CompetitionDTO updatedCompetition
     ) {
         CompetitionDTO updated = competitionService.update(id, updatedCompetition);
@@ -63,18 +55,12 @@ public class CompetitionController implements CommonController<CompetitionDTO> {
         return ResponseEntity.ok("Competition deleted successfully");
     }
 
-    // Custom endpoint for joining a competition
-    @PostMapping("/{id}/join")
+    @GetMapping("/join")
     public ResponseEntity<CompetitionDTO> joinCompetition(
-            @PathVariable("id") Long competitionId,
-            @RequestBody JoinCompetitionRequest request,
-            @RequestHeader("User-Id") Long userId  // Temporary - replace with security context
+            @RequestParam(name = "joinCode") String joinCode,
+            @RequestParam(name = "userId") Long userId
     ) {
-        CompetitionDTO competition = competitionService.joinCompetition(
-                competitionId,
-                userId,
-                request.getJoinCode()
-        );
+        CompetitionDTO competition = competitionService.joinCompetition(joinCode, userId);
         return ResponseEntity.ok(competition);
     }
 }

@@ -22,7 +22,7 @@ public class GameWeekController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GameWeekDTO> getGameWeekById(@PathVariable("id") Long id) {
+    public ResponseEntity<GameWeekDTO> getGameWeekById(@PathVariable Long id) {
         return ResponseEntity.ok(gameWeekService.getById(id));
     }
 

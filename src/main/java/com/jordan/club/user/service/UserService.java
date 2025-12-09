@@ -2,7 +2,8 @@ package com.jordan.club.user.service;
 
 import com.jordan.club.common.exception.ValidationException;
 import com.jordan.club.common.service.CommonService;
-import com.jordan.club.user.dto.UserDTO;
+import com.jordan.club.user.dto.response.UserResponse;
+import com.jordan.club.user.dto.request.CreateUserRequest;
 import com.jordan.club.user.entity.User;
 import com.jordan.club.user.mapper.UserMapper;
 import com.jordan.club.user.repository.UserRepository;
@@ -17,38 +18,47 @@ import static java.util.Objects.isNull;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService implements CommonService<UserDTO> {
+public class UserService implements CommonService<UserResponse> {
 
     private final UserRepository repository;
     private final UserMapper mapper;
 
     @Override
-    public List<UserDTO> getAll() {
+    public List<UserResponse> getAll() {
         return repository.findAll().stream()
-                .map(mapper::toDTO)
+                .map(mapper::mapEntityToResponse)
                 .toList();
     }
 
     @Override
-    public UserDTO getById(Long id) {
+    public UserResponse getById(Long id) {
         return repository.findById(id)
-                .map(mapper::toDTO)
+                .map(mapper::mapEntityToResponse)
                 .orElseThrow();
     }
 
     @Override
-    public UserDTO save(UserDTO newDTO) {
+    public UserResponse save(UserResponse newDTO) {
         validateEmail(newDTO.getEmail(), null);
 
         User user = mapper.fromDTO(newDTO);
         User savedUser = repository.save(user);
 
         log.info("Created new user with email: {}", savedUser.getEmail());
-        return mapper.toDTO(savedUser);
+        return mapper.mapEntityToResponse(savedUser);
+    }
+
+    public UserResponse save(CreateUserRequest newUser) {
+        User newUserEntity = mapper.mapCreateRequestToEntity(newUser);
+        User savedUser = repository.save(newUserEntity);
+
+        log.info("New user created, id={}, username={}, email={}",
+                savedUser.getId(), savedUser.getUsername(), savedUser.getEmail());
+        return mapper.mapEntityToResponse(savedUser);
     }
 
     @Override
-    public UserDTO update(Long id, UserDTO updatedDTO) {
+    public UserResponse update(Long id, UserResponse updatedDTO) {
         User existingUser = repository.findById(id).orElseThrow();
 
         if (!existingUser.getEmail().equals(updatedDTO.getEmail())) {
@@ -61,7 +71,7 @@ public class UserService implements CommonService<UserDTO> {
         User savedUser = repository.save(existingUser);
 
         log.info("Updated user with id: {}", id);
-        return mapper.toDTO(savedUser);
+        return mapper.mapEntityToResponse(savedUser);
     }
 
     @Override

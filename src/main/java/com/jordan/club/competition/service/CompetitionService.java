@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static java.util.Objects.isNull;
 
@@ -49,7 +50,6 @@ public class CompetitionService implements CommonService<CompetitionDTO> {
     @Override
     @Transactional
     public CompetitionDTO save(CompetitionDTO newDTO) {
-        validateName(newDTO.getName(), null);
 
         // Auto-generate join code if not provided
         if (isNull(newDTO.getJoinCode()) || newDTO.getJoinCode().isBlank()) {
@@ -76,16 +76,6 @@ public class CompetitionService implements CommonService<CompetitionDTO> {
     public CompetitionDTO update(Long id, CompetitionDTO updatedDTO) {
         Competition existingCompetition = repository.findById(id).orElseThrow();
 
-        // Validate name if changed
-        if (!existingCompetition.getName().equals(updatedDTO.getName())) {
-            validateName(updatedDTO.getName(), id);
-        }
-
-        // Validate join code if changed
-        if (!existingCompetition.getJoinCode().equals(updatedDTO.getJoinCode())) {
-            validateJoinCode(updatedDTO.getJoinCode(), id);
-        }
-
         existingCompetition.setName(updatedDTO.getName());
         existingCompetition.setDescription(updatedDTO.getDescription());
         existingCompetition.setStatus(updatedDTO.getStatus());
@@ -93,12 +83,9 @@ public class CompetitionService implements CommonService<CompetitionDTO> {
         existingCompetition.setEndDate(updatedDTO.getEndDate());
         existingCompetition.setJoinCode(updatedDTO.getJoinCode());
 
-        // Note: participants are NOT updated via the standard update endpoint
-        // Use the joinCompetition method instead
-
         Competition savedCompetition = repository.save(existingCompetition);
 
-        log.info("Updated competition with id: {}", id);
+        log.info("Updated competition with id={}", id);
         return mapper.toDTO(savedCompetition);
     }
 
@@ -116,56 +103,26 @@ public class CompetitionService implements CommonService<CompetitionDTO> {
     }
 
     @Transactional
-    public CompetitionDTO joinCompetition(Long competitionId, Long userId, String joinCode) {
-        // Validate inputs
-        if (isNull(joinCode) || joinCode.isBlank()) {
-            throw new ValidationException("Join code cannot be null or empty");
-        }
+    public CompetitionDTO joinCompetition(String joinCode, Long userId) {
+        Competition competition = repository.findByJoinCode(joinCode)
+                .orElseThrow(() ->
+                        new NoSuchElementException("Unable to find competition with the join code " + joinCode));
 
-        // Find competition
-        Competition competition = repository.findById(competitionId)
-                .orElseThrow();
+        User user = userRepository.findById(userId).
+                orElseThrow(() -> new NoSuchElementException("Unable to find user with id " + userId));
 
-        // Validate join code
-        if (!competition.getJoinCode().equals(joinCode)) {
-            throw new ValidationException("Invalid join code");
-        }
-
-        // Find user
-        User user = userRepository.findById(userId)
-                .orElseThrow();
-
-        // Check if user is already a participant
         if (competition.getParticipants().contains(user)) {
-            log.info("User {} is already a participant in competition {}", userId, competitionId);
+            log.warn("userId={} is already a participant of the competition with joinCode={}",
+                    userId, joinCode);
             return mapper.toDTO(competition);
         }
 
-        // Add user to competition using helper method (maintains bidirectional relationship)
         competition.addParticipant(user);
 
-        Competition savedCompetition = repository.save(competition);
+        Competition updatedCompetition = repository.save(competition);
 
-        log.info("User {} joined competition {} with join code", userId, competitionId);
-        return mapper.toDTO(savedCompetition);
-    }
-
-    private void validateName(String name, Long excludeId) {
-        if (isNull(name) || name.isBlank()) {
-            throw new ValidationException("Name cannot be null or empty");
-        }
-
-        if (repository.existsByName(name)) {
-            if (excludeId != null) {
-                repository.findByName(name).ifPresent(competition -> {
-                    if (!competition.getId().equals(excludeId)) {
-                        throw new ValidationException("Competition name already exists: " + name);
-                    }
-                });
-            } else {
-                throw new ValidationException("Competition name already exists: " + name);
-            }
-        }
+        log.info("userId={} has joined competition (id={}) using join code", userId, updatedCompetition.getId());
+        return mapper.toDTO(updatedCompetition);
     }
 
     private void validateJoinCode(String joinCode, Long excludeId) {

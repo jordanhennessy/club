@@ -3,7 +3,6 @@ package com.jordan.club.gameweek.service;
 import com.jordan.club.fixture.dto.FixtureDTO;
 import com.jordan.club.fixture.service.FixtureService;
 import com.jordan.club.gameweek.dto.GameWeekDTO;
-import com.jordan.club.gameweek.entity.GameWeek;
 import com.jordan.club.gameweek.enums.GameWeekStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

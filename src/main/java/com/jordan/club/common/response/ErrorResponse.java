@@ -1,15 +1,18 @@
 package com.jordan.club.common.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
+
+import java.util.Map;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ErrorResponse {
-    private int statusCode;
+    private Integer statusCode;
     private String message;
+    private String path;
+    private String timestamp;
+    private Map<String, String> fieldErrors;
 }
