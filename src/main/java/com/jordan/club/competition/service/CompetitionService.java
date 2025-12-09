@@ -54,18 +54,16 @@ public class CompetitionService {
     @Transactional
     public CompetitionResponse save(CreateCompetitionRequest newCompetition) {
 
-        Integer startGameWeek;
         if (nonNull(newCompetition.getStartGameWeek())) {
             validateStartGameWeek(newCompetition.getStartGameWeek());
-            startGameWeek = newCompetition.getStartGameWeek();
         } else {
-            startGameWeek = gameWeekService.getNextGameWeek().getGameWeek();
+            Integer nextGameWeek = gameWeekService.getNextGameWeek().getGameWeek();
+            newCompetition.setStartGameWeek(nextGameWeek);
         }
 
         Competition competition = mapper.mapCreateRequestToEntity(newCompetition);
         competition.setJoinCode(generateUniqueJoinCode());
         competition.setStatus(DRAFT);
-        competition.setStartGameWeek(startGameWeek);
         Competition savedCompetition = repository.save(competition);
 
         log.info("Created new competition, {}", savedCompetition);

@@ -41,6 +41,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleValidationException(ValidationException ex) {
         ErrorResponse response = ErrorResponse.builder()
                 .statusCode(UNPROCESSABLE_ENTITY.value())
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now().toString())
                 .message(ex.getMessage())
                 .build();
 
