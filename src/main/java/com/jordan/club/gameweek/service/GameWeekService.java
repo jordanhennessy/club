@@ -37,6 +37,11 @@ public class GameWeekService {
         return gameWeekRepository.findAll().stream().map(gameWeekMapper::toDTO).toList();
     }
 
+    public boolean isDeadlinePassed(Integer gameWeek) {
+        GameWeek gameWeekEntity = gameWeekRepository.findByGameWeek(gameWeek).orElseThrow();
+        return gameWeekEntity.getDeadline().isBefore(LocalDateTime.now());
+    }
+
     public GameWeekDTO getById(Long id) {
         return gameWeekRepository.findById(id).map(gameWeekMapper::toDTO).orElseThrow();
     }

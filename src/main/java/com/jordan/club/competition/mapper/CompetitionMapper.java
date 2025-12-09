@@ -1,7 +1,7 @@
 package com.jordan.club.competition.mapper;
 
-import com.jordan.club.common.mapper.CommonMapper;
-import com.jordan.club.competition.dto.CompetitionDTO;
+import com.jordan.club.competition.dto.response.CompetitionResponse;
+import com.jordan.club.competition.dto.request.CreateCompetitionRequest;
 import com.jordan.club.competition.entity.Competition;
 import com.jordan.club.user.entity.User;
 import com.jordan.club.user.repository.UserRepository;
@@ -13,12 +13,11 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class CompetitionMapper implements CommonMapper<Competition, CompetitionDTO> {
+public class CompetitionMapper {
 
     private final UserRepository userRepository;
 
-    @Override
-    public Competition fromDTO(CompetitionDTO dto) {
+    public Competition fromDTO(CompetitionResponse dto) {
         Competition competition = Competition.builder()
                 .id(dto.getId())
                 .name(dto.getName())
@@ -42,19 +41,21 @@ public class CompetitionMapper implements CommonMapper<Competition, CompetitionD
         return competition;
     }
 
-    @Override
-    public CompetitionDTO toDTO(Competition entity) {
-        return CompetitionDTO.builder()
+    public CompetitionResponse toDTO(Competition entity) {
+        return CompetitionResponse.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .description(entity.getDescription())
                 .status(entity.getStatus())
-                .startDate(entity.getStartDate())
-                .endDate(entity.getEndDate())
+                .startGameWeek(entity.getStartGameWeek())
                 .joinCode(entity.getJoinCode())
                 .participantIds(entity.getParticipants().stream()
                         .map(User::getId)
                         .collect(Collectors.toSet()))
                 .build();
+    }
+
+    public Competition mapCreateRequestToEntity(CreateCompetitionRequest newCompetition) {
+
     }
 }

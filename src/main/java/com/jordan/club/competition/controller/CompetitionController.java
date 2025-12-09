@@ -1,9 +1,10 @@
 package com.jordan.club.competition.controller;
 
-import com.jordan.club.common.controller.CommonController;
-import com.jordan.club.competition.dto.CompetitionDTO;
-import com.jordan.club.competition.dto.JoinCompetitionRequest;
+import com.jordan.club.competition.dto.request.UpdateCompetitionRequest;
+import com.jordan.club.competition.dto.response.CompetitionResponse;
+import com.jordan.club.competition.dto.request.CreateCompetitionRequest;
 import com.jordan.club.competition.service.CompetitionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,40 +16,35 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RestController
 @RequestMapping("/competitions")
 @RequiredArgsConstructor
-public class CompetitionController implements CommonController<CompetitionDTO> {
+public class CompetitionController {
 
     private final CompetitionService competitionService;
 
-    @Override
     @GetMapping
-    public ResponseEntity<List<CompetitionDTO>> getAll() {
+    public ResponseEntity<List<CompetitionResponse>> getAll() {
         return ResponseEntity.ok(competitionService.getAll());
     }
 
-    @Override
     @GetMapping("/{id}")
-    public ResponseEntity<CompetitionDTO> getById(@PathVariable Long id) {
+    public ResponseEntity<CompetitionResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(competitionService.getById(id));
     }
 
-    @Override
     @PostMapping
-    public ResponseEntity<CompetitionDTO> create(@RequestBody CompetitionDTO competition) {
-        CompetitionDTO created = competitionService.save(competition);
+    public ResponseEntity<CompetitionResponse> create(@Valid @RequestBody CreateCompetitionRequest newCompetition) {
+        CompetitionResponse created = competitionService.save(newCompetition);
         return ResponseEntity.status(CREATED).body(created);
     }
 
-    @Override
     @PutMapping("/{id}")
-    public ResponseEntity<CompetitionDTO> update(
+    public ResponseEntity<CompetitionResponse> update(
             @PathVariable Long id,
-            @RequestBody CompetitionDTO updatedCompetition
+            @RequestBody UpdateCompetitionRequest updatedCompetition
     ) {
-        CompetitionDTO updated = competitionService.update(id, updatedCompetition);
+        CompetitionResponse updated = competitionService.update(id, updatedCompetition);
         return ResponseEntity.ok(updated);
     }
 
-    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {
         competitionService.delete(id);
@@ -56,11 +52,11 @@ public class CompetitionController implements CommonController<CompetitionDTO> {
     }
 
     @GetMapping("/join")
-    public ResponseEntity<CompetitionDTO> joinCompetition(
+    public ResponseEntity<CompetitionResponse> joinCompetition(
             @RequestParam(name = "joinCode") String joinCode,
             @RequestParam(name = "userId") Long userId
     ) {
-        CompetitionDTO competition = competitionService.joinCompetition(joinCode, userId);
+        CompetitionResponse competition = competitionService.joinCompetition(joinCode, userId);
         return ResponseEntity.ok(competition);
     }
 }

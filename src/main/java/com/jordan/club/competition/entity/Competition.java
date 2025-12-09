@@ -49,11 +49,8 @@ public class Competition {
     @Column(name = "status", nullable = false)
     private CompetitionStatus status;
 
-    @Column(name = "start_date")
-    private LocalDateTime startDate;
-
-    @Column(name = "end_date")
-    private LocalDateTime endDate;
+    @Column(name = "start_game_week")
+    private Integer startGameWeek;
 
     @Column(name = "join_code", unique = true, nullable = false, length = 8)
     private String joinCode;

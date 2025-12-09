@@ -1,4 +1,4 @@
-package com.jordan.club.competition.dto;
+package com.jordan.club.competition.dto.response;
 
 import com.jordan.club.competition.enums.CompetitionStatus;
 import lombok.AllArgsConstructor;
@@ -14,14 +14,13 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompetitionDTO {
+public class CompetitionResponse {
 
     private Long id;
     private String name;
     private String description;
     private CompetitionStatus status;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private Integer startGameWeek;
     private String joinCode;
 
     @Builder.Default
