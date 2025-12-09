@@ -1,9 +1,9 @@
 package com.jordan.club.gameweek.service;
 
 import com.jordan.club.fixture.dto.FixtureDTO;
-import com.jordan.club.fixture.enums.FixtureStatus;
 import com.jordan.club.fixture.service.FixtureService;
 import com.jordan.club.gameweek.dto.GameWeekDTO;
+import com.jordan.club.gameweek.entity.GameWeek;
 import com.jordan.club.gameweek.enums.GameWeekStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,12 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.List;
 
 import static com.jordan.club.gameweek.enums.GameWeekStatus.*;
-import static java.time.temporal.ChronoUnit.HOURS;
 
 @Slf4j
 @Service
@@ -28,38 +25,30 @@ public class GameWeekSyncService {
 
     @Transactional
     public void syncGameWeekData() {
-        List<GameWeekDTO> gameWeeks = gameWeekService.getAll();
+        if (!gameWeekService.gameWeeksExist()) {
+            gameWeekService.seedGameWeeks();
+        }
+        List<GameWeekDTO> upcomingGameWeeks = gameWeekService.getByStatus(UPCOMING.name());
+        updateDeadlines(upcomingGameWeeks);
+        updateStatuses(upcomingGameWeeks);
+    }
 
+    public void updateDeadlines(List<GameWeekDTO> gameWeeks) {
         gameWeeks.forEach(gameWeek -> {
-            GameWeekStatus status = resolveGameWeekStatus(gameWeek);
-            gameWeek.setStatus(status);
+            List<FixtureDTO> fixtures = fixtureService.getFixturesByGameWeek(gameWeek.getGameWeek());
+            LocalDateTime deadline = gameWeekService.resolveDeadline(fixtures);
+            gameWeek.setDeadline(deadline);
             gameWeekService.update(gameWeek);
         });
     }
 
-    private GameWeekStatus resolveGameWeekStatus(GameWeekDTO gameWeek) {
-        List<FixtureDTO> fixtures = fixtureService.getFixturesByGameWeek(gameWeek.getGameWeek());
-
-        if (isAllFixturesCompleted(fixtures)) {
-            return COMPLETED;
-        }
-
-        if (isDeadlinePassed(fixtures)) {
-            return ACTIVE;
-        }
-
-        return UPCOMING;
-    }
-
-    private boolean isDeadlinePassed(List<FixtureDTO> fixtures) {
-        List<LocalDateTime> kickOffTimes = fixtures.stream().map(FixtureDTO::getKickOffTime).toList();
-        LocalDateTime firstKickOff = kickOffTimes.stream().min(LocalDateTime::compareTo).orElseThrow();
-        LocalDateTime deadline = firstKickOff.minusHours(24);
-        return LocalDateTime.now().isAfter(deadline);
-    }
-
-    private boolean isAllFixturesCompleted(List<FixtureDTO> fixtures) {
-        return fixtures.stream().allMatch(fixture -> fixture.getStatus().equals(FixtureStatus.FINISHED));
+    public void updateStatuses(List<GameWeekDTO> gameWeeks) {
+        gameWeeks.forEach(gameWeek -> {
+            List<FixtureDTO> fixtures = fixtureService.getFixturesByGameWeek(gameWeek.getGameWeek());
+            GameWeekStatus status = gameWeekService.resolveGameWeekStatus(fixtures);
+            gameWeek.setStatus(status);
+            gameWeekService.update(gameWeek);
+        });
     }
 
 }

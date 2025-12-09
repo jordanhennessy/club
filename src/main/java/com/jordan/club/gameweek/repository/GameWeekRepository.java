@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface GameWeekRepository extends JpaRepository<GameWeek, Long> {
-    List<GameWeek> findByStatus(GameWeekStatus status);
+    List<GameWeek> findAllByStatus(GameWeekStatus status);
 }

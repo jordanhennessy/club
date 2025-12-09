@@ -14,6 +14,7 @@ public class GameWeekMapper implements CommonMapper<GameWeek, GameWeekDTO> {
         return GameWeek.builder()
                 .id(dto.getId())
                 .gameWeek(dto.getGameWeek())
+                .deadline(dto.getDeadline())
                 .status(dto.getStatus())
                 .build();
     }
@@ -23,6 +24,7 @@ public class GameWeekMapper implements CommonMapper<GameWeek, GameWeekDTO> {
         return GameWeekDTO.builder()
                 .id(entity.getId())
                 .gameWeek(entity.getGameWeek())
+                .deadline(entity.getDeadline())
                 .status(entity.getStatus())
                 .build();
     }

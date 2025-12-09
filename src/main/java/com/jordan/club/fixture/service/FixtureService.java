@@ -4,14 +4,12 @@ import com.jordan.club.common.exception.ValidationException;
 import com.jordan.club.fixture.client.FixtureClient;
 import com.jordan.club.fixture.dto.FixtureDTO;
 import com.jordan.club.fixture.enums.FixtureStatus;
-import com.jordan.club.fixture.model.FixtureResponse;
 import com.jordan.club.fixture.mapper.FixtureMapper;
 import com.jordan.club.fixture.repository.FixtureRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,7 +30,7 @@ public class FixtureService {
         }
 
         if (isNull(status)) {
-            return repository.findByGameWeek(gameWeek).stream().map(mapper::toDTO).toList();
+            return repository.findAllByGameWeek(gameWeek).stream().map(mapper::toDTO).toList();
         }
 
         FixtureStatus fixtureStatus = FixtureStatus.getByName(status);
@@ -42,10 +40,10 @@ public class FixtureService {
         }
 
         if(isNull(gameWeek)) {
-            return repository.findByStatus(fixtureStatus).stream().map(mapper::toDTO).toList();
+            return repository.findAllByStatus(fixtureStatus).stream().map(mapper::toDTO).toList();
         }
 
-        return repository.findByGameWeekAndStatus(gameWeek, fixtureStatus).stream().map(mapper::toDTO).toList();
+        return repository.findAllByGameWeekAndStatus(gameWeek, fixtureStatus).stream().map(mapper::toDTO).toList();
     }
 
     public List<FixtureDTO> getFixturesByGameWeek(Integer gameWeek) {
@@ -53,7 +51,7 @@ public class FixtureService {
             return repository.findAll().stream().map(mapper::toDTO).toList();
         }
 
-        return repository.findByGameWeek(gameWeek).stream().map(mapper::toDTO).toList();
+        return repository.findAllByGameWeek(gameWeek).stream().map(mapper::toDTO).toList();
     }
 
     public List<FixtureDTO> getFixturesForCurrentGameWeek() {

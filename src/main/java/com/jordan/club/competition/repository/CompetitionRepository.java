@@ -10,10 +10,7 @@ import java.util.Optional;
 public interface CompetitionRepository extends JpaRepository<Competition, Long> {
 
     Optional<Competition> findByName(String name);
-
     boolean existsByName(String name);
-
     Optional<Competition> findByJoinCode(String joinCode);
-
     boolean existsByJoinCode(String joinCode);
 }

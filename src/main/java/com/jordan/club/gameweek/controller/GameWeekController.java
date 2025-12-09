@@ -26,4 +26,8 @@ public class GameWeekController {
         return ResponseEntity.ok(gameWeekService.getById(id));
     }
 
+    @GetMapping("/next")
+    public ResponseEntity<GameWeekDTO> getNextGameWeek() {
+        return ResponseEntity.ok(gameWeekService.getNextGameWeek());
+    }
 }

@@ -1,24 +1,24 @@
 package com.jordan.club.gameweek.service;
 
+import com.jordan.club.common.event.FixtureDataRefreshEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionalEventListener;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.springframework.transaction.event.TransactionPhase.BEFORE_COMMIT;
+
 
 @Slf4j
 @Component
-@EnableScheduling
 @RequiredArgsConstructor
 public class GameWeekSyncScheduler {
 
     private final GameWeekSyncService gameWeekSyncService;
 
-    @Scheduled(initialDelay = 30, timeUnit = SECONDS)
+    @TransactionalEventListener(classes = FixtureDataRefreshEvent.class, phase = BEFORE_COMMIT)
     public void scheduleGameWeekSync() {
-        log.info("Syncing GameWeek data...");
+        log.info("Updating GameWeek data...");
         gameWeekSyncService.syncGameWeekData();
         log.info("Successfully synced GameWeek data");
     }
