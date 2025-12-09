@@ -1,5 +1,6 @@
 package com.jordan.club.user.controller;
 
+import com.jordan.club.user.dto.request.UpdateUserRequest;
 import com.jordan.club.user.dto.response.UserResponse;
 import com.jordan.club.user.dto.request.CreateUserRequest;
 import com.jordan.club.user.service.UserService;
@@ -45,7 +46,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> update(
             @PathVariable Long id,
-            @RequestBody UserResponse updatedUser
+            @RequestBody UpdateUserRequest updatedUser
     ) {
         UserResponse updated = userService.update(id, updatedUser);
         return ResponseEntity.ok(updated);
